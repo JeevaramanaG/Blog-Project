@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
-const userScheme = new mongoose.Schema(
+
+const userSchema = new mongoose.Schema(
   {
     user: {
       type: String,
@@ -13,16 +14,29 @@ const userScheme = new mongoose.Schema(
       type: String,
       required: true,
     },
-    proflieImage: {
+    profileImage: {
       type: String,
     },
     coverImage: {
       type: String,
     },
+    posts: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Post",
+      },
+    ],
+    comments: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Comment",
+      },
+    ],
   },
   {
     timestamps: true,
   }
 );
-const User = mongoose.model("user", userScheme);
+
+const User = mongoose.model("User", userSchema);
 module.exports = User;
