@@ -1,4 +1,5 @@
 const express = require("express");
+const protect = require("../../middleware/protected");
 const {
   userControllerRegister,
   userControllerLogin,
@@ -11,10 +12,9 @@ const {
   userControllerUpdateUser,
 } = require("../../controller/users/userController");
 const userRouter = express.Router();
-
 userRouter.post("/register", userControllerRegister);
 userRouter.post("/login", userControllerLogin);
-userRouter.get("/:id", userControllerDetails);
+userRouter.get("/:id", protect,userControllerDetails);
 userRouter.get("/profile/:id", userControllerProfile);
 userRouter.put("/profile-photo-upload/:id", userControllerProfilePhotoUpdate);
 userRouter.put("/cover-photo-upload/:id", userControllerCoverPhotoUpdate);
