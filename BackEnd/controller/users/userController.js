@@ -36,7 +36,7 @@ const userControllerLogin = async (req, res) => {
     res.json({ message: "Invalid Password" });
   }
   req.session.userAuth = user._id;
-  return res.json({ message: "Login Successfully", user });
+  return res.json(user);
 };
 
 const userControllerLogout = async (req, res) => {
@@ -64,13 +64,42 @@ const userControllerProfile = async (req, res) => {
   }
 };
 const userControllerProfilePhotoUpdate = async (req, res) => {
+  console.log(req.file.path);
+  const userId = req.session.userAuth;
+  const foundUser = await User.findById(userId);
+  if (!foundUser) {
+    res.status(404).json({ message: "user Not found" });
+  }
+  await User.findByIdAndUpdate(
+    userId,
+    {
+      profileImage: req.file.path,
+    },
+    {
+      new: true,
+    }
+  );
+
   try {
-    return res.json({ message: "ProfilePhotoUpload" });
+    return res.json(foundUser);
   } catch (error) {
     return res.json(error);
   }
 };
 const userControllerCoverPhotoUpdate = async (req, res) => {
+  console.log(req.file.path);
+  const userId = req.session.userAuth;
+  const userFound = await User.findById(userId);
+  if (!userFound) {
+    res.status(404).json({ message: "user Not found" });
+  }
+  await User.findByIdAndUpdate(
+    userId,
+    {
+      coverImage: req.file.path,
+    },
+    { new: true }
+  );
   try {
     return res.json({ message: "CoverphotoUpload" });
   } catch (error) {
