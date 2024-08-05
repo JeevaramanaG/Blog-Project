@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const session = require("express-session");
+const mongo_connect = require("connect-mongo");
 const userRouter = require("./router/users/user");
 const postRouter = require("./router/posts/post");
 const commentRouter = require("./router/comments/comment");
@@ -18,6 +19,15 @@ app.use(
     secret: "Jeeva",
     resave: false,
     saveUninitialized: false,
+    store: mongo_connect.create({
+      mongoUrl: "mongodb://127.0.0.1:27017/Blog-project",
+      collectionName: "session",
+    }),
+    cookie: {
+      maxAge: 1000 * 60 * 60 * 24, // 1 day
+      secure: process.env.NODE_ENV === "production",
+      httpOnly: true,
+    },
   })
 );
 

@@ -14,12 +14,21 @@ const {
 const userRouter = express.Router();
 userRouter.post("/register", userControllerRegister);
 userRouter.post("/login", userControllerLogin);
-userRouter.get("/:id", protect,userControllerDetails);
-userRouter.get("/profile/:id", userControllerProfile);
-userRouter.put("/profile-photo-upload/:id", userControllerProfilePhotoUpdate);
-userRouter.put("/cover-photo-upload/:id", userControllerCoverPhotoUpdate);
-userRouter.put("/update-password/:id", userControllerUpdatePassword);
-userRouter.put("/update-user/:id", userControllerUpdateUser);
-userRouter.post("/logout", userControllerLogout);
+
+userRouter.get("/profile/:id", protect, userControllerProfile);
+userRouter.put(
+  "/profile-photo-upload/:id",
+  protect,
+  userControllerProfilePhotoUpdate
+);
+userRouter.put(
+  "/cover-photo-upload/:id",
+  protect,
+  userControllerCoverPhotoUpdate
+);
+userRouter.put("/update-password/:id", protect, userControllerUpdatePassword);
+userRouter.put("/update-user/:id", protect, userControllerUpdateUser);
+userRouter.post("/logout", protect, userControllerLogout);
+userRouter.get("/:id", protect, userControllerDetails);
 
 module.exports = userRouter;
