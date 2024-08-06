@@ -10,7 +10,7 @@ const commentCreate = async (req, res) => {
     if (!post) {
       return res.status(404).json({ message: "Post not found" });
     }
-    
+
     const comment = await Comment.create({
       user: req.session.userAuth,
       message,
@@ -50,6 +50,11 @@ const commentDelete = async (req, res) => {
     if (!comment) {
       res.status(404).json({ message: "comment not found" });
     }
+    if (comment.id.toString() !== req.session.userAuth.toString()) {
+      return res
+        .status(403)
+        .json({ message: "You are not authorized to delete this comment" });
+    }
     await User.updateOne(
       { comments: req.params.id },
       { $pull: { comments: req.params.id } }
@@ -66,6 +71,11 @@ const commentDelete = async (req, res) => {
 const commentUpdate = async (req, res) => {
   const { message } = req.body;
   try {
+    if (comment.id.toString() !== req.session.userAuth.toString()) {
+      return res
+        .status(403)
+        .json({ message: "You are not authorized to update this comment" });
+    }
     const comment = await Comment.findByIdAndUpdate(
       req.params.id,
       {

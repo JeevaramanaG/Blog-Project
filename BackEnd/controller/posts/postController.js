@@ -45,8 +45,13 @@ const postControllerFetchOnePost = async (req, res) => {
   }
 };
 const postControllerUpdatePost = async (req, res) => {
-  
+  const postId = req.params.id;
   try {
+    const post = await Post.findById(postId);
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+    
     return res.json({ message: "Update post" });
   } catch (error) {
     return res.json(error);
