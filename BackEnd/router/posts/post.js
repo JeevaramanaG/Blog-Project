@@ -1,4 +1,6 @@
 const express = require("express");
+const multer = require("multer");
+const storage = require("../../config/cloudinary");
 const {
   postControllerCreate,
   postControllerFetchPosts,
@@ -6,13 +8,14 @@ const {
   postControllerUpdatePost,
   postControllerDeletePost,
 } = require("../../controller/posts/postController");
-
+const protected = require("../../middleware/protected");
+const upload = multer({ storage });
 const postRouter = express.Router();
 
-postRouter.post("/", postControllerCreate);
-postRouter.get("/", postControllerFetchPosts);
-postRouter.get("/:id", postControllerFetchOnePost);
-postRouter.put("/:id", postControllerUpdatePost);
-postRouter.delete("/:id", postControllerDeletePost);
+postRouter.post("/", protected, upload.single("post"), postControllerCreate);
+postRouter.get("/", protected, postControllerFetchPosts);
+postRouter.get("/:id", protected, postControllerFetchOnePost);
+postRouter.put("/:id", protected, postControllerUpdatePost);
+postRouter.delete("/:id", protected, postControllerDeletePost);
 
 module.exports = postRouter;
