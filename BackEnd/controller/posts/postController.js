@@ -45,6 +45,7 @@ const postControllerFetchOnePost = async (req, res) => {
   }
 };
 const postControllerUpdatePost = async (req, res) => {
+  
   try {
     return res.json({ message: "Update post" });
   } catch (error) {

@@ -10,7 +10,7 @@ const commentCreate = async (req, res) => {
     if (!post) {
       return res.status(404).json({ message: "Post not found" });
     }
-
+    
     const comment = await Comment.create({
       user: req.session.userAuth,
       message,
@@ -33,8 +33,12 @@ const commentCreate = async (req, res) => {
 };
 
 const commentDetails = async (req, res) => {
+  const comment = await Comment.findById(req.params.id).populate("user");
   try {
-    return res.json({ Message: "comment details" });
+    if (!comment) {
+      return res.status(404).json({ message: "comment not found" });
+    }
+    return res.json(comment);
   } catch (error) {
     return res.json(error);
   }
