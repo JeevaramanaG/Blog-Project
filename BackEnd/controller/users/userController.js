@@ -57,8 +57,15 @@ const userControllerDetails = async (req, res) => {
   }
 };
 const userControllerProfile = async (req, res) => {
+  const user = req.params.id;
   try {
-    return res.json({ message: "Profile" });
+    const userFound = await User.findById(user)
+      .populate("comments")
+      .populate("posts");
+    if (!userFound) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    return res.json(userFound);
   } catch (error) {
     return res.json(error);
   }

@@ -10,7 +10,7 @@ const commentCreate = async (req, res) => {
     if (!post) {
       return res.status(404).json({ message: "Post not found" });
     }
-    
+
     const comment = await Comment.create({
       user: req.session.userAuth,
       message,
@@ -23,7 +23,9 @@ const commentCreate = async (req, res) => {
     await post.save();
     await user.save();
 
-    return res.status(201).json({ message: "Comment created successfully", comment });
+    return res
+      .status(201)
+      .json({ message: "Comment created successfully", comment });
   } catch (error) {
     console.error("Error creating comment:", error);
     return res.status(500).json({ message: "Internal Server Error" });
@@ -38,15 +40,40 @@ const commentDetails = async (req, res) => {
   }
 };
 const commentDelete = async (req, res) => {
+  const commentId = req.params.id;
   try {
-    return res.json({ Message: "comment delete" });
+    const comment = await Comment.findByIdAndDelete(commentId);
+    if (!comment) {
+      res.status(404).json({ message: "comment not found" });
+    }
+    await User.updateOne(
+      { comments: req.params.id },
+      { $pull: { comments: req.params.id } }
+    );
+    await Post.updateOne(
+      { comments: req.params.id },
+      { $pull: { comments: req.params.id } }
+    );
+    return res.json({ message: "comment delete successfully" });
   } catch (error) {
     return res.json(error);
   }
 };
 const commentUpdate = async (req, res) => {
+  const { message } = req.body;
   try {
-    return res.json({ Message: "comment update" });
+    const comment = await Comment.findByIdAndUpdate(
+      req.params.id,
+      {
+        message,
+      },
+      { new: true }
+    );
+    if (!comment) {
+      res.status(404).json({ message: "comment not found" });
+    }
+    await comment.save();
+    return res.json({ Message: "comment update", comment });
   } catch (error) {
     return res.json(error);
   }
